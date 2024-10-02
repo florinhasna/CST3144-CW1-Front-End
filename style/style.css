@@ -1,0 +1,16 @@
+.scroll-container {
+    max-height: 80vh;
+    overflow: auto;
+}
+
+.scroll-container::-webkit-scrollbar {
+    display: none;
+    /* Safari and Chrome */
+}
+
+.scroll-container {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+}

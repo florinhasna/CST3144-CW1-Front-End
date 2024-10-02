@@ -4,5 +4,9 @@ var myApp = new Vue({
         cartIconAlt: "Cart",
         cartIconSrc: "assets/cart.png",
         objectsInCart: 0,
+        title: "Painting class",
+        imgSrc: "assets/paint.png",
+        location: "London",
+        price: 100
     }
 });
