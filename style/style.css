@@ -1,8 +1,10 @@
+/* Enable scroll */
 .scroll-container {
     max-height: 80vh;
     overflow: auto;
 }
 
+/* Disable the scrollbar on different browsers */
 .scroll-container::-webkit-scrollbar {
     display: none;
     /* Safari and Chrome */
