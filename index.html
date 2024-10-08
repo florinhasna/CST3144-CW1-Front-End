@@ -164,9 +164,139 @@
       <!-- Checkout container -->
       <main class="container" id="checkout" v-else>
         <div class="p-3 scroll-container justify-content-center border">
-          <h4>Cart</h4>
+          <h2>Cart</h2>
+          <div class="container-fluid">
+            <h4>Before you checkout:</h4>
+            <div class="row m-3">
+              <div class="col">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="First name"
+                  aria-label="First name"
+                  v-model.trim="order.firstName"
+                />
+              </div>
+
+              <div class="col">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Last name"
+                  aria-label="Last name"
+                  v-model.trim="order.lastName"
+                />
+              </div>
+            </div>
+
+            <div class="row m-3">
+              <div class="col">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Address"
+                  aria-label="Address"
+                  v-model.trim="order.address"
+                />
+              </div>
+
+              <div class="col">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="City"
+                  aria-label="City"
+                  v-model.trim="order.city"
+                />
+              </div>
+
+              <div class="col">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="County"
+                  aria-label="County"
+                  v-model.trim="order.county"
+                />
+              </div>
+
+              <div class="col">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Postcode"
+                  aria-label="Postcode"
+                  v-model.trim="order.postcode"
+                />
+              </div>
+            </div>
+
+            <div class="row m-3">
+              <div class="col">
+                <input
+                  class="form-control"
+                  placeholder="Phone number"
+                  aria-label="Phone number"
+                  type="number"
+                  v-model.trim="order.phoneNo"
+                />
+              </div>
+
+              <div class="col">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="E-mail"
+                  aria-label="E-mail"
+                  v-model.trim="order.email"
+                />
+              </div>
+            </div>
+
+            <div class="container-fluid mx-5">
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="personalOrBusiness"
+                  id="personal"
+                  value="Personal"
+                  v-model.trim="order.method"
+                />
+                <label class="form-check-label" for="ascending">
+                  Personal
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="personalOrBusiness"
+                  id="business"
+                  value="Business"
+                  v-model.trim="order.method"
+                />
+                <label class="form-check-label" for="descending">
+                  Business
+                </label>
+              </div>
+            </div>
+          </div>
+
           <div class="row m-2">
             <button type="button" class="btn btn-success">Checkout</button>
+          </div>
+          <div class="container-fluid mx-5">
+            <h2>Order Informations</h2>
+            <p>First Name: <strong>{{order.firstName}}</strong></p>
+            <p>Last Name: <strong>{{order.lastName}}</strong></p>
+            <p>Address: <strong>{{order.address}}</strong></p>
+            <p>City: <strong>{{order.city}}</strong></p>
+            <p>Postcode: <strong>{{order.postcode}}</strong></p>
+            <p>County: <strong>{{order.county}}</strong></p>
+            <p>Phone number: <strong>{{order.phoneNo}}</strong></p>
+            <p>Email: <strong>{{order.email}}</strong></p>
+            <p>Method: <strong>{{order.method}}</strong></p>
           </div>
         </div>
       </main>

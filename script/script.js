@@ -12,6 +12,17 @@ var myApp = new Vue({
             location: "London",
             price: 100,
             availability: 5, 
+        },
+        order: {
+            firstName: '',
+            lastName: '',
+            address: '',
+            city: '',
+            county: '',
+            postcode: '',
+            method: '',
+            phoneNo: '',
+            email: '',
         }
     },
     computed:{ // reactive properties for auto-update
