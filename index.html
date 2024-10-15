@@ -16,7 +16,7 @@
   <body>
     <div class="vw-100 vh-100" id="body">
       <!-- Header holding navigation bar (title and checkout button) -->
-      <header>
+      <header class="bg-info text-white">
         <nav class="navbar navbar-expand">
           <div class="container-md">
             <h3>School classes and activities</h3>
@@ -24,9 +24,10 @@
           <div class="container-md justify-content-end">
             <!-- Button toggles between products list and checkout  -->
             <button
-              class="btn btn btn-outline-success me-2"
+              class="btn btn btn-light me-2"
               type="button"
               @click="showCheckout"
+              :disabled="isCartEmpty"
             >
               <!-- Show the number of products in the cart, if there are any, don't show if 0 -->
               <b
@@ -46,6 +47,22 @@
 
       <!-- Product list container -->
       <main class="container" id="browse" v-if="showProducts">
+        <div class="row my-3">
+          <div class="col-md-8">
+            <input
+              class="form-control mr-sm-2"
+              type="search"
+              placeholder="Search"
+              aria-label="Search"
+              v-model.trim="search"
+            />
+          </div>
+          <div class="col-md-4">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
+              Search
+            </button>
+          </div>
+        </div>
         <div class="row">
           <!-- Container for sorting elements (radios) -->
           <div class="col-md-1 p-5">
@@ -150,16 +167,19 @@
                     cartCount(product.id)}}
                   </p>
                 </div>
-                <!-- Button that adds items in the cart, disables when there are no more spaces -->
-                <button
-                  type="button"
-                  class="btn btn-outline-primary"
-                  @click="addItem(product.id)"
-                  :disabled="product.availability === cartCount(product.id)"
-                >
-                  {{(product.availability === cartCount(product.id)) ? "Out" :
-                  "Add to cart"}}
-                </button>
+
+                <div class="col-3 d-flex">
+                  <!-- Button that adds items in the cart, disables when there are no more spaces -->
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    @click="addItem(product.id)"
+                    :disabled="product.availability === cartCount(product.id)"
+                  >
+                    {{(product.availability === cartCount(product.id)) ? "Out" :
+                    "Add to cart"}}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -168,8 +188,17 @@
 
       <!-- Checkout container -->
       <main class="container" id="checkout" v-else>
-        <div class="p-3 scroll-container justify-content-center border">
+        <div class="p-3 scroll-container justify-content-center border mt-3">
           <h2>Cart</h2>
+          <div v-for="product in objectsInCart">
+            <div class="row">
+              <div class="lesson-img col-md-2">
+                <img v-bind:src="product.imgSrc" :alt="product.title" />
+              </div>
+              <div class="col-md-8"></div>
+              <div class="col-md-2"></div>
+            </div>
+          </div>
           <div class="container-fluid">
             <h4>Before you checkout:</h4>
             <div class="row m-3">
@@ -206,7 +235,9 @@
         </div>
       </main>
 
-      <footer class="d-flex justify-content-center fixed-bottom">
+      <footer
+        class="d-flex justify-content-center fixed-bottom bg-info text-white"
+      >
         &copy Florin Hasna
       </footer>
     </div>

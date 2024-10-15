@@ -1,6 +1,6 @@
 /* Enable scroll */
 .scroll-container {
-    max-height: 80vh;
+    max-height: 75vh;
     overflow: auto;
 }
 
@@ -25,5 +25,5 @@ input[type="number"]::-webkit-inner-spin-button {
 
 .lesson-img {
     width: auto;
-    height: 128px;
+    height: 96px;
 }
