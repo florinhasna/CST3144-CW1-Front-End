@@ -30,9 +30,7 @@
               :disabled="isCartEmpty"
             >
               <!-- Show the number of products in the cart, if there are any, don't show if 0 -->
-              <b
-                >{{(objectsInCart.length === 0) ? "" : objectsInCart.length}}</b
-              >
+              <b>{{(idsInCart.length === 0) ? "" : idsInCart.length}}</b>
               <img
                 class="img-fluid"
                 v-bind:src="cartIconSrc"
@@ -83,7 +81,6 @@
                 id="subject"
                 value="Subject"
                 v-model="sortBy"
-                @click="sortedProducts"
               />
               <label class="form-check-label" for="subject"> Subject </label>
             </div>
@@ -161,7 +158,7 @@
           <div class="col-md-9 p-3 mx-2 scroll-container">
             <div
               class="d-flex justify-content-center"
-              v-for="product in productList"
+              v-for="product in sortedProducts"
             >
               <!-- Single product container -->
               <div class="row border rounded m-3 p-3 w-50">
@@ -206,13 +203,61 @@
       <main class="container" id="checkout" v-else>
         <div class="p-3 scroll-container justify-content-center border mt-3">
           <h2>Cart</h2>
-          <div v-for="product in objectsInCart">
-            <div class="row">
+          <div v-for="element in cartItems">
+            <div class="row border rounded m-3 p-3 w-80">
               <div class="lesson-img col-md-2">
-                <img v-bind:src="product.imgSrc" :alt="product.title" />
+                <img
+                  v-bind:src="element.getProduct.imgSrc"
+                  :alt="element.getProduct.title"
+                  class="lesson-img"
+                />
               </div>
-              <div class="col-md-8"></div>
-              <div class="col-md-2"></div>
+              <div class="col-md-3">
+                <h4 v-text="element.getProduct.title"></h4>
+                <p v-text="element.getProduct.location"></p>
+                <p>£{{element.getProduct.price}}/EA</p>
+              </div>
+              <div class="col-md-3 d-flex align-items-center">
+                <h6 class="text-start">
+                  Spaces left: {{element.getProduct.availability -
+                  element.getOrderedQty}}
+                </h6>
+              </div>
+              <div class="col-md-4 mt-3">
+                <h5 class="text-center">Quantity</h5>
+                <div class="row">
+                  <div class="col-md-4 d-flex flex-column">
+                    <button
+                      class="btn btn-sm btn-outline-danger align-self-end"
+                      @click="removeItem(element.getProduct.id)"
+                    >
+                      <img
+                        src="assets/minus-solid.svg"
+                        alt="Minus"
+                        width="24"
+                      />
+                    </button>
+                  </div>
+                  <div class="col-md-4">
+                    <input
+                      class="form-control text-center"
+                      placeholder="Order Qty."
+                      aria-label="Order Qty."
+                      type="number"
+                      v-model="element.getOrderedQty"
+                    />
+                  </div>
+                  <div class="col-md-4 d-flex flex-column">
+                    <button
+                      class="btn btn-sm btn-outline-success align-self-start"
+                      @click="addItem(element.getProduct.id)"
+                      :disabled="element.getProduct.availability === cartCount(element.getProduct.id)"
+                    >
+                      <img src="assets/plus-solid.svg" alt="Plus" width="24" />
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           <div class="container-fluid">

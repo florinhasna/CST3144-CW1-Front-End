@@ -1,10 +1,13 @@
 var myApp = new Vue({
     el: "#body",
     data: {
-        showProducts: true, // property for toggling between elements
+         // property for toggling between elements, switch between checkout and product list
+        showProducts: true,
+        // cart button settings
         cartIconAlt: "Cart", 
         cartIconSrc: "assets/cart.svg",
-        objectsInCart: [],
+        idsInCart: [], // save IDs of the objects
+        // default sorting settings
         sortBy: "Subject",
         sortDirection: "Ascending",
         productList: [{
@@ -13,7 +16,7 @@ var myApp = new Vue({
             imgSrc: "assets/paint.svg",
             location: "Uxbridge",
             price: 100,
-            availability: 5, 
+            availability: 5,
         },
         {
             id: 1001,
@@ -95,6 +98,7 @@ var myApp = new Vue({
             price: 110,
             availability: 5, 
         }],
+        // order data to be collected
         order: {
             name: '',
             phoneNo: '',
@@ -103,7 +107,7 @@ var myApp = new Vue({
     },
     computed:{ // reactive properties for auto-update
         isCartEmpty() {
-            return (this.objectsInCart.length === 0);
+            return (this.idsInCart.length === 0);
         },
 
         // sort products
@@ -162,10 +166,36 @@ var myApp = new Vue({
             if(this.sortBy === "Availability" && this.sortDirection === "Descending")
                 return this.productList.sort(sortByAvailability).reverse();
         },
+
+        // to populate an array with the product, and the desired order quantity
+        cartItems() {
+            // to populate with ids already processed, to avoid duplicates
+            var usedIDs = [];
+            var productsInCart = [];
+
+            // loop every id added to the cart
+            this.idsInCart.forEach(id => {
+                // check if the id was already processed
+                if(!usedIDs.includes(id)){
+                    // get the quantity, using cartCound method
+                    let orderQty = this.cartCount(id);
+                    // get the product from the product list
+                    let aProduct = this.productList.find(item => item.id === id);
+                    // add the two as a new object to the array
+                    productsInCart.push({getOrderedQty: orderQty, getProduct: aProduct});
+                    // mark the id as already added
+                    usedIDs.push(id);
+                }
+            });
+
+            return productsInCart;
+        }
     },
     methods:{
         addItem(id){ // add item to the cart
-            this.objectsInCart.push(id);
+            this.idsInCart.push(id);
+        },
+        removeItem(id){ // add item to the cart
         },
         showCheckout(){ // toggle between products and checkout
             this.showProducts = this.showProducts ? false : true;
@@ -173,7 +203,7 @@ var myApp = new Vue({
         cartCount(productID) {
             count = 0;
 
-            this.objectsInCart.forEach(element => {
+            this.idsInCart.forEach(element => {
                 if(element === productID)
                     count++;
             });
