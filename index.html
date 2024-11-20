@@ -30,7 +30,7 @@
               :disabled="isCartEmpty"
             >
               <!-- Show the number of products in the cart, if there are any, don't show if 0 -->
-              <b>{{(idsInCart.length === 0) ? "" : idsInCart.length}}</b>
+              <b>{{ (idsInCart.length === 0) ? "" : idsInCart.length }}</b>
               <img
                 class="img-fluid"
                 v-bind:src="cartIconSrc"
@@ -66,9 +66,9 @@
           <div class="col-md-2 p-5">
             <!-- To show how the products are sorted -->
             <div>
-              <strong>{{sortBy}}</strong>
+              <strong>{{ sortBy }}</strong>
               <br />
-              <strong>{{sortDirection}}</strong>
+              <strong>{{ sortDirection }}</strong>
             </div>
             <br />
 
@@ -161,7 +161,7 @@
               v-for="product in sortedProducts"
             >
               <!-- Single product container -->
-              <div class="row border rounded m-3 p-3 w-50">
+              <div class="row border rounded m-3 p-3 w-75">
                 <!-- Icon container -->
                 <div class="col-4 d-flex">
                   <img
@@ -174,14 +174,13 @@
                 <div class="col-5">
                   <h4 v-text="product.title"></h4>
                   <p v-text="product.location"></p>
-                  <p>£{{product.price}}</p>
+                  <p>£{{ product.price }}</p>
                   <p>
-                    Available spaces: {{product.availability -
-                    cartCount(product.id)}}
+                    Available spaces: {{ product.availability -
+                    cartCount(product.id) }}
                   </p>
                 </div>
-
-                <div class="col-3 d-flex">
+                <div class="col-3 m-auto">
                   <!-- Button that adds items in the cart, disables when there are no more spaces -->
                   <button
                     type="button"
@@ -189,8 +188,8 @@
                     @click="addItem(product.id)"
                     :disabled="product.availability === cartCount(product.id)"
                   >
-                    {{(product.availability === cartCount(product.id)) ? "Out" :
-                    "Add to cart"}}
+                    {{ (product.availability === cartCount(product.id)) ? "Out" :
+                    "Add to cart" }}
                   </button>
                 </div>
               </div>
@@ -202,7 +201,10 @@
       <!-- Checkout container -->
       <main class="container" id="checkout" v-else>
         <div class="p-3 scroll-container justify-content-center border mt-3">
-          <h2>Cart</h2>
+          <div class="row m-2">
+            <h2 class="col-md-10">Cart</h2>
+            <button type="button" class="btn btn-danger col-md-2" @click="showCheckout">Return to product list</button>
+          </div>
           <div v-for="element in cartItems">
             <div class="row border rounded m-3 p-3 w-80">
               <div class="lesson-img col-md-2">
@@ -215,12 +217,12 @@
               <div class="col-md-3">
                 <h4 v-text="element.getProduct.title"></h4>
                 <p v-text="element.getProduct.location"></p>
-                <p>£{{element.getProduct.price}}/EA</p>
+                <p>£{{ element.getProduct.price }}/EA</p>
               </div>
               <div class="col-md-3 d-flex align-items-center">
                 <h6 class="text-start">
-                  Spaces left: {{element.getProduct.availability -
-                  element.getOrderedQty}}
+                  Spaces left: {{ element.getProduct.availability -
+                  element.getOrderedQty }}
                 </h6>
               </div>
               <div class="col-md-4 mt-3">
@@ -238,14 +240,10 @@
                       />
                     </button>
                   </div>
-                  <div class="col-md-4">
-                    <input
-                      class="form-control text-center"
-                      placeholder="Order Qty."
-                      aria-label="Order Qty."
-                      type="number"
-                      v-model="element.getOrderedQty"
-                    />
+                  <div class="col-md-4 mt-2">
+                    <p class="text-center border rounded">
+                      {{ element.getOrderedQty }}
+                    </p>
                   </div>
                   <div class="col-md-4 d-flex flex-column">
                     <button
@@ -282,7 +280,7 @@
                   v-model.trim="order.phoneNo"
                 />
               </div>
-            </div>
+            </div>  
           </div>
 
           <div class="row m-2">
@@ -290,8 +288,8 @@
           </div>
           <div class="container-fluid mx-5">
             <h2>Order Informations</h2>
-            <p>Name: <strong>{{order.name}}</strong></p>
-            <p>Phone number: <strong>{{order.phoneNo}}</strong></p>
+            <p>Name: <strong>{{ order.name }}</strong></p>
+            <p>Phone number: <strong>{{ order.phoneNo }}</strong></p>
           </div>
         </div>
       </main>
