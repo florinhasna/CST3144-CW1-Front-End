@@ -102,6 +102,11 @@ var myApp = new Vue({
         order: {
             name: '',
             phoneNo: '',
+            totalCost: 0,
+        },
+        errors: {
+            phone: '',
+            name: '',
         },
         search: '',
     },
@@ -195,17 +200,30 @@ var myApp = new Vue({
                     // get the product from the product list
                     let aProduct = this.productList.find(item => item.id === id);
                     // add the two as a new object to the array
-                    productsInCart.push({ getOrderedQty: orderQty, getProduct: aProduct });
+                    productsInCart.push({
+                        getOrderedQty: orderQty,
+                        getTotalPrice: orderQty * aProduct.price,
+                        getProduct: aProduct
+                    });
                     // mark the id as already added
                     usedIDs.push(id);
                 }
             });
 
             return productsInCart;
+        },
+        cartTotalCost() {
+            let totalCost = 0;
+            this.idsInCart.forEach(id => {
+                // get the product from the product list
+                let aProduct = this.productList.find(item => item.id === id);
+                totalCost += aProduct.price;
+            });
+            return totalCost;
         }
     },
     methods: {
-        addItem(id) { // add item to the cart
+        addItem(id, price) { // add item to the cart
             this.idsInCart.push(id);
         },
         removeItem(id) { // remove item from the cart
@@ -228,6 +246,23 @@ var myApp = new Vue({
             });
 
             return count;
+        },
+        validatePhone() {
+            // regex for phone number validation
+            const phoneRegex = /^\+?[0-9]\d{10,13}$/;
+            this.errors.phone = !this.order.phoneNo
+                ? "Valid phone number is required."
+                : !phoneRegex.test(this.order.phoneNo)
+                    ? "Invalid phone number format."
+                    : "";
+        },
+        validateName() {
+            const fullNameRegex = /^[a-zA-Z]+(?: [a-zA-Z]+)*$/;
+            this.errors.name = !this.order.name
+                ? "Full name is required."
+                : !fullNameRegex.test(this.order.name)
+                    ? "Invalid name format."
+                    : "";
         }
     },
 });

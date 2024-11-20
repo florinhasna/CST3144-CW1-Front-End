@@ -214,12 +214,12 @@
                   class="lesson-img"
                 />
               </div>
-              <div class="col-md-3">
+              <div class="col-md-2">
                 <h4 v-text="element.getProduct.title"></h4>
                 <p v-text="element.getProduct.location"></p>
                 <p>£{{ element.getProduct.price }}/EA</p>
               </div>
-              <div class="col-md-3 d-flex align-items-center">
+              <div class="col-md-2 d-flex align-items-center">
                 <h6 class="text-start">
                   Spaces left: {{ element.getProduct.availability -
                   element.getOrderedQty }}
@@ -256,6 +256,14 @@
                   </div>
                 </div>
               </div>
+              <div class="col-md-2">
+                <div class="row mt-4">
+                  <h5 class="text-center">Total</h5>
+                </div>
+                <div class="row">
+                  <p class="text-center">£{{ element.getTotalPrice }}</p>
+                </div>
+              </div>
             </div>
           </div>
           <div class="container-fluid">
@@ -268,7 +276,9 @@
                   placeholder="Name"
                   aria-label="Name"
                   v-model.trim="order.name"
+                  @input="validateName"
                 />
+                <span v-if="errors.name" class="text-danger">{{ errors.name }}</span>
               </div>
 
               <div class="col">
@@ -278,7 +288,9 @@
                   aria-label="Phone number"
                   type="number"
                   v-model.trim="order.phoneNo"
+                  @input="validatePhone"
                 />
+                <span v-if="errors.phone" class="text-danger">{{ errors.phone }}</span>
               </div>
             </div>  
           </div>
@@ -290,6 +302,7 @@
             <h2>Order Informations</h2>
             <p>Name: <strong>{{ order.name }}</strong></p>
             <p>Phone number: <strong>{{ order.phoneNo }}</strong></p>
+            <p>Total cost: <strong v-text="cartTotalCost"></strong></p>
           </div>
         </div>
       </main>
