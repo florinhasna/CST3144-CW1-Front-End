@@ -181,7 +181,7 @@ var myApp = new Vue({
         },
         // search lessons
         search() {
-            fetch(`https://cst3144cwlessonsbookingsystem-env.eba-kxsnegmz.eu-west-2.elasticbeanstalk.com/${this.searchWord}/${this.sortBy}/${this.sortDirection}`).then(
+            fetch(`https://cst3144cwlessonsbookingsystem-env.eba-kxsnegmz.eu-west-2.elasticbeanstalk.com/search/${this.searchWord}/${this.sortBy}/${this.sortDirection}`).then(
                 function (response) {
                     response.json().then(
                         function (json) {
@@ -193,7 +193,7 @@ var myApp = new Vue({
     },
     created:
         function () {
-            fetch(`https://cst3144cwlessonsbookingsystem-env.eba-kxsnegmz.eu-west-2.elasticbeanstalk.com/${this.sortBy}/${this.sortDirection}`).then(
+            fetch(`https://cst3144cwlessonsbookingsystem-env.eba-kxsnegmz.eu-west-2.elasticbeanstalk.com/collections/lessons/${this.sortBy}/${this.sortDirection}`).then(
                 function (response) {
                     response.json().then(
                         function (json) {
