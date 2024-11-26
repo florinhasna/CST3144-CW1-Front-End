@@ -19,7 +19,7 @@
       <header class="bg-info text-white">
         <nav class="navbar navbar-expand">
           <div class="container-md">
-            <h3>School classes and activities</h3>
+            <h3 v-text="title"></h3>
           </div>
           <div class="container-md justify-content-end">
             <!-- Button toggles between products list and checkout  -->
@@ -43,26 +43,25 @@
         </nav>
       </header>
 
-      <!-- Product list container -->
+      <!-- Product list container, displayed when showProducts is true -->
       <main class="container" id="browse" v-if="showProducts">
+
+        <!-- Search field container -->
         <div class="row my-3">
-          <div class="col-md-8">
+          <div class="col-md-12">
             <input
               class="form-control mr-sm-2"
               type="search"
-              placeholder="Search"
+              placeholder="Search for a lesson..."
               aria-label="Search"
               v-model.trim="searchWord"
+              @input="search"
             />
           </div>
-          <div class="col-md-4">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
-              Search
-            </button>
-          </div>
         </div>
+
+        <!-- Container for sorting elements (radios) -->
         <div class="row">
-          <!-- Container for sorting elements (radios) -->
           <div class="col-md-2 p-5">
             <!-- To show how the products are sorted -->
             <div>
@@ -82,7 +81,7 @@
                 value="Subject"
                 v-model="sortBy"
               />
-              <label class="form-check-label" for="subject"> Subject </label>
+              <label class="form-check-label" for="subject">Subject</label>
             </div>
 
             <div class="form-check">
@@ -94,7 +93,7 @@
                 value="Location"
                 v-model="sortBy"
               />
-              <label class="form-check-label" for="location"> Location </label>
+              <label class="form-check-label" for="location">Location</label>
             </div>
 
             <div class="form-check">
@@ -106,7 +105,7 @@
                 value="Price"
                 v-model="sortBy"
               />
-              <label class="form-check-label" for="price"> Price </label>
+              <label class="form-check-label" for="price">Price</label>
             </div>
 
             <div class="form-check">
@@ -118,14 +117,13 @@
                 value="Availability"
                 v-model="sortBy"
               />
-              <label class="form-check-label" for="availability">
-                Availability
-              </label>
+              <label class="form-check-label" for="availability">Availability</label>
             </div>
 
             <br />
             <br />
 
+            <!-- Fields for sort direction -->
             <div class="form-check">
               <input
                 class="form-check-input"
@@ -135,9 +133,7 @@
                 value="Ascending"
                 v-model="sortDirection"
               />
-              <label class="form-check-label" for="ascending">
-                Ascending
-              </label>
+              <label class="form-check-label" for="ascending">Ascending</label>
             </div>
 
             <div class="form-check">
@@ -149,11 +145,10 @@
                 value="Descending"
                 v-model="sortDirection"
               />
-              <label class="form-check-label" for="descending">
-                Descending
-              </label>
+              <label class="form-check-label" for="descending">Descending</label>
             </div>
           </div>
+
           <!-- Container for products list, scrollable -->
           <div class="col-md-9 p-3 mx-2 scroll-container">
             <div
@@ -198,15 +193,21 @@
         </div>
       </main>
 
-      <!-- Checkout container -->
+      <!-- Checkout container, displayed if showProducts is false -->
       <main class="container" id="checkout" v-else>
         <div class="p-3 scroll-container justify-content-center border mt-3">
           <div class="row m-2">
             <h2 class="col-md-10">Cart</h2>
+            <!-- Alternative to go back to products if all products have been removed from cart -->
             <button type="button" class="btn btn-danger col-md-2" @click="showCheckout">Return to product list</button>
           </div>
+
+          <!-- Container to display the elements added to the cart -->
           <div v-for="element in cartItems">
+            <!-- Split into columns for different relevant info -->
             <div class="row border rounded m-3 p-3 w-80">
+              
+              <!-- Image container column  -->
               <div class="lesson-img col-md-2">
                 <img
                   v-bind:src="element.getProduct.imgSrc"
@@ -214,17 +215,23 @@
                   class="lesson-img"
                 />
               </div>
+
+              <!-- Product details column -->
               <div class="col-md-2">
                 <h4 v-text="element.getProduct.title"></h4>
                 <p v-text="element.getProduct.location"></p>
                 <p>£{{ element.getProduct.price }}/EA</p>
               </div>
+
+              <!-- Amount of spaces left -->
               <div class="col-md-2 d-flex align-items-center">
                 <h6 class="text-start">
                   Spaces left: {{ element.getProduct.availability -
                   element.getOrderedQty }}
                 </h6>
               </div>
+
+              <!-- Ordered quantity with options to increase or decrease -->
               <div class="col-md-4 mt-3">
                 <h5 class="text-center">Quantity</h5>
                 <div class="row">
@@ -256,6 +263,8 @@
                   </div>
                 </div>
               </div>
+
+              <!-- Column to display amount to be paid -->
               <div class="col-md-2">
                 <div class="row mt-4">
                   <h5 class="text-center">Total</h5>
@@ -266,9 +275,14 @@
               </div>
             </div>
           </div>
+
+          <!-- Container to get user input for required information for the order -->
           <div class="container-fluid">
             <h4>Before you checkout:</h4>
+
             <div class="row m-3">
+
+              
               <div class="col">
                 <input
                   type="text"
@@ -281,6 +295,7 @@
                 <span v-if="errors.name" class="text-danger">{{ errors.name }}</span>
               </div>
 
+              <!-- Field to get phone number which validates live -->
               <div class="col">
                 <input
                   class="form-control"
@@ -295,9 +310,12 @@
             </div>  
           </div>
 
+          <!-- Checkout button container, active only when the two fields are valid -->
           <div class="row m-2">
-            <button type="button" class="btn btn-success" @click="placeOrder">Checkout</button>
+            <button type="button" class="btn btn-success" @click="placeOrder" :disabled="isDataValid">Checkout</button>
           </div>
+
+          <!-- Show the input data -->
           <div class="container-fluid mx-5">
             <h2>Order Informations</h2>
             <p>Name: <strong>{{ order.name }}</strong></p>

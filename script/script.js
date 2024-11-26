@@ -1,14 +1,14 @@
 var myApp = new Vue({
     el: "#body",
     data: {
+        title: "School classes and activities",
         // property for toggling between elements, switch between checkout and product list
         showProducts: true,
         // cart button settings
         cartIconAlt: "Cart",
         cartIconSrc: "assets/cart.svg",
         idsInCart: [], // save IDs of the objects
-        // default sorting settings
-        sortBy: "Subject",
+        sortBy: "Subject", // default sorting settings
         sortDirection: "Ascending",
         productList: [],
         // order data to be collected
@@ -20,17 +20,18 @@ var myApp = new Vue({
         },
         errors: {
             phone: '',
+            isPhoneValid: false,
             name: '',
+            isNameValid: false,
         },
         searchWord: '',
     },
     computed: { // reactive properties for auto-update
-        isCartEmpty() {
+        isCartEmpty() { // check if the cart is empty
             return (this.idsInCart.length === 0);
         },
 
-        // sort products
-        sortedProducts() {
+        sortedProducts() { // sort products
             // to sort by price
             function sortByPrice(a, b) {
                 if (a.price > b.price) return 1;
@@ -99,8 +100,7 @@ var myApp = new Vue({
                 return this.productList.sort(sortByAvailability).reverse();
         },
 
-        // to populate an array with the product, and the desired order quantity
-        cartItems() {
+        cartItems() { // to populate an array with the product, and the desired order quantity
             // to populate with ids already processed, to avoid duplicates
             var usedIDs = [];
             let productsInCart = [];
@@ -139,8 +139,7 @@ var myApp = new Vue({
             return productsInCart;
         },
 
-        // total cost of the cart computation
-        cartTotalCost() {
+        cartTotalCost() { // total cost of the cart computation
             let totalCost = 0;
             this.idsInCart.forEach(id => {
                 // get the product from the product list
@@ -151,11 +150,16 @@ var myApp = new Vue({
             this.order.totalCost = totalCost;
             return totalCost;
         },
+
+        isDataValid() { // to check if both name and phone number are valid
+            return !(this.errors.isPhoneValid && this.errors.isNameValid);
+        },
     },
     methods: {
         addItem(id, price) { // add item to the cart
             this.idsInCart.push(id);
         },
+
         removeItem(id) { // remove item from the cart
             let indexOf = this.idsInCart.findIndex(item => item === id);
 
@@ -164,10 +168,12 @@ var myApp = new Vue({
                 this.idsInCart.splice(indexOf, 1);
             }
         },
+
         showCheckout() { // toggle between products and checkout
             this.showProducts = this.showProducts ? false : true;
         },
-        cartCount(productID) {
+
+        cartCount(productID) { // count the ids added to the cart
             count = 0;
 
             this.idsInCart.forEach(element => {
@@ -177,36 +183,54 @@ var myApp = new Vue({
 
             return count;
         },
-        validatePhone() {
+
+        validatePhone() { // validates phone number
             // regex for phone number validation
             const phoneRegex = /^\+?[0-9]\d{10,13}$/;
+            this.errors.isPhoneValid = phoneRegex.test(this.order.phoneNo);
             this.errors.phone = !this.order.phoneNo
                 ? "Valid phone number is required."
-                : !phoneRegex.test(this.order.phoneNo)
+                : !this.errors.isPhoneValid
                     ? "Invalid phone number format."
                     : "";
         },
-        validateName() {
+
+        validateName() { // validates name
+            // regex for name validation
             const fullNameRegex = /^[a-zA-Z]+(?: [a-zA-Z]+)*$/;
+            this.errors.isNameValid = fullNameRegex.test(this.order.name);
             this.errors.name = !this.order.name
                 ? "Full name is required."
-                : !fullNameRegex.test(this.order.name)
+                : !this.errors.isNameValid
                     ? "Invalid name format."
                     : "";
         },
-        // search lessons
-        search() {
-            fetch(`https://cst3144cwlessonsbookingsystem-env.eba-kxsnegmz.eu-west-2.elasticbeanstalk.com/search/${this.searchWord}/${this.sortBy}/${this.sortDirection}`).then(
-                function (response) {
-                    response.json().then(
-                        function (json) {
-                            this.productList = json;
-                        }
-                    )
-                })
+
+        async search() { // search lessons
+            if (this.searchWord !== "") {
+                await fetch(`https://cst3144cwlessonsbookingsystem-env.eba-kxsnegmz.eu-west-2.elasticbeanstalk.com/collections/lessons/search/${this.searchWord}/${this.sortBy}/${this.sortDirection}`)
+                    .then(response => response.json())
+                    .then(json => {
+                        this.productList = json; // `this` correctly refers to Vue instance
+                    })
+                    .catch(error => {
+                        console.error('Error fetching search results:', error);
+                    });
+            } else {
+                fetch(`https://cst3144cwlessonsbookingsystem-env.eba-kxsnegmz.eu-west-2.elasticbeanstalk.com/collections/lessons/${this.sortBy}/${this.sortDirection}`).then(
+                    function (response) {
+                        response.json().then(
+                            function (json) {
+                                myApp.productList = json;
+                            }
+                        )
+                    }
+                );
+            }
+
         },
-        // to place the order, sends requests to back-end
-        async placeOrder() {
+
+        async placeOrder() { // to place the order, sends requests to back-end
             // post request to create the order in the Orders collection
             await fetch(`https://cst3144cwlessonsbookingsystem-env.eba-kxsnegmz.eu-west-2.elasticbeanstalk.com/place-order`,
                 { // set the request configuration
