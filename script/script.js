@@ -128,6 +128,7 @@ var myApp = new Vue({
                     // add the id of the ordered object in the order.items array
                     this.order.items.push({
                         _id: orderItem.getProduct._id,
+                        lessonId: orderItem.getProduct.id,
                         availability: orderItem.getProduct.availability - orderItem.getOrderedQty
                     });
                     // mark the id as already added
