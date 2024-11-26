@@ -296,13 +296,13 @@
           </div>
 
           <div class="row m-2">
-            <button type="button" class="btn btn-success">Checkout</button>
+            <button type="button" class="btn btn-success" @click="placeOrder">Checkout</button>
           </div>
           <div class="container-fluid mx-5">
             <h2>Order Informations</h2>
             <p>Name: <strong>{{ order.name }}</strong></p>
             <p>Phone number: <strong>{{ order.phoneNo }}</strong></p>
-            <p>Total cost: <strong v-text="cartTotalCost"></strong></p>
+            <p>Total cost: £<strong>{{ cartTotalCost }}</strong></p>
           </div>
         </div>
       </main>

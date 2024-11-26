@@ -16,6 +16,7 @@ var myApp = new Vue({
             name: '',
             phoneNo: '',
             totalCost: 0,
+            items: [],
         },
         errors: {
             phone: '',
@@ -102,7 +103,9 @@ var myApp = new Vue({
         cartItems() {
             // to populate with ids already processed, to avoid duplicates
             var usedIDs = [];
-            var productsInCart = [];
+            let productsInCart = [];
+            // reset the order.items array every time is called so it can be populated with what is in the cart
+            this.order.items = [];
 
             // loop every id added to the cart
             this.idsInCart.forEach(id => {
@@ -112,17 +115,27 @@ var myApp = new Vue({
                     let orderQty = this.cartCount(id);
                     // get the product from the product list
                     let aProduct = this.productList.find(item => item.id === id);
-                    // add the two as a new object to the array
-                    productsInCart.push({
+
+                    // order item 
+                    let orderItem = {
                         getOrderedQty: orderQty,
                         getTotalPrice: orderQty * aProduct.price,
                         getProduct: aProduct
+                    };
+
+                    // add the new order object to the relevant array
+                    productsInCart.push(orderItem);
+                    // add the id of the ordered object in the order.items array
+                    this.order.items.push({
+                        _id: orderItem.getProduct._id,
+                        availability: orderItem.getProduct.availability - orderItem.getOrderedQty
                     });
                     // mark the id as already added
                     usedIDs.push(id);
                 }
             });
 
+            // to display the list in the checkout page
             return productsInCart;
         },
 
@@ -134,6 +147,8 @@ var myApp = new Vue({
                 let aProduct = this.productList.find(item => item.id === id);
                 totalCost += aProduct.price;
             });
+
+            this.order.totalCost = totalCost;
             return totalCost;
         },
     },
@@ -189,6 +204,49 @@ var myApp = new Vue({
                         }
                     )
                 })
+        },
+        // to place the order, sends requests to back-end
+        async placeOrder() {
+            // post request to create the order in the Orders collection
+            await fetch(`https://cst3144cwlessonsbookingsystem-env.eba-kxsnegmz.eu-west-2.elasticbeanstalk.com/place-order`,
+                { // set the request configuration
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json", // data type to JSON
+                    },
+                    body: JSON.stringify(this.order),
+                }).then( // handle the response, print it
+                    function (response) {
+                        response.json().then(
+                            function (json) {
+                                alert("Order placed with number: " + json);
+                                console.log("Order placed: " + json);
+                            }
+                        )
+                    }
+                )
+
+            // put request to update the availability of the lessons in the database
+            await fetch(`https://cst3144cwlessonsbookingsystem-env.eba-kxsnegmz.eu-west-2.elasticbeanstalk.com/collections/lessons/update/availability`,
+                { // set the request configuration
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json", // data type to JSON
+                    },
+                    body: JSON.stringify(this.order.items),
+                }
+            ).then( // handle the response, print it
+                function (responsePut) {
+                    responsePut.json().then(
+                        function (jsonPut) {
+                            console.log(jsonPut);
+                        }
+                    )
+                }
+            )
+
+            // reload the page to show the updates
+            location.reload();
         }
     },
     created:
