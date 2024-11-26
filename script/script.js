@@ -243,15 +243,14 @@ var myApp = new Vue({
                     function (response) {
                         response.json().then(
                             function (json) {
-                                alert("Order placed with number: " + json);
-                                console.log("Order placed: " + json);
+                                alert("Order placed with number: " + json.insertId);
                             }
                         )
                     }
                 )
 
             // put request to update the availability of the lessons in the database
-            await fetch(`https://cst3144cwlessonsbookingsystem-env.eba-kxsnegmz.eu-west-2.elasticbeanstalk.com/collections/lessons/update/availability`,
+            await fetch(`https://cst3144cwlessonsbookingsystem-env.eba-kxsnegmz.eu-west-2.elasticbeanstalk.com/collections/lessons/update`,
                 { // set the request configuration
                     method: "PUT",
                     headers: {
